@@ -21,7 +21,7 @@ class Score
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Equipe $equibeB = null;
+    private ?Equipe $equipeB = null;
 
     #[ORM\Column(length: 70)]
     private ?string $score = null;
@@ -43,14 +43,14 @@ class Score
         return $this;
     }
 
-    public function getEquibeB(): ?Equipe
+    public function getEquipeB(): ?Equipe
     {
-        return $this->equibeB;
+        return $this->equipeB;
     }
 
-    public function setEquibeB(Equipe $equibeB): static
+    public function setEquipeB(Equipe $equipeB): static
     {
-        $this->equibeB = $equibeB;
+        $this->equipeB = $equipeB;
 
         return $this;
     }
