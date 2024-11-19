@@ -13,7 +13,7 @@ use App\Repository\EquipeRepository;
 
 class ScoreController extends AbstractController
 {
-    #[Route('/api/score', name: 'score_index', methods: ['GET'])]
+    #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
     public function index(ScoreRepository $scoreRepository): JsonResponse
     {
         $scores = $scoreRepository->findAll();
@@ -31,7 +31,7 @@ class ScoreController extends AbstractController
         ]);
     }
 
-    #[Route('/api/score/{id}', name: 'score_byId', methods: ['GET'])]
+    #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
     public function getById(Score $score): JsonResponse
     {
         return $this->json([
@@ -42,7 +42,7 @@ class ScoreController extends AbstractController
         ]);
     } 
     
-    #[Route('/api/score/{id}', methods: ['DELETE'])]
+    #[Route('/api/scores/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Score $score, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$score) {
