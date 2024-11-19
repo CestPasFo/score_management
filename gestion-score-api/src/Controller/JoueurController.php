@@ -32,7 +32,7 @@ class JoueurController extends AbstractController
 
     }
 
-    #[Route('/api/equipes/{id}', methods: ['DELETE'])]
+    #[Route('/api/joueur/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Joueur $joueur, EntityManagerInterface $entityManager): JsonResponse
     {
         // Vérifier si l'équipe existe
@@ -49,5 +49,31 @@ class JoueurController extends AbstractController
         } catch (\Exception $e) {
             return $this->json(['message' => 'Erreur lors de la suppression du joueur'], 500);
         }
+    }
+
+    #[Route('/api/joueur', name: 'joueur_index', methods: ['GET'])]
+    public function index(JoueurRepository $joueurRepository): JsonResponse
+    {
+        $joueurs = $joueurRepository->findAll();
+
+        return $this->json([
+            'joueurs' => array_map(callback: function($joueur): array {
+                return [
+                    'id' => $joueur->getId(),
+                    'nom' => $joueur->getNom(),
+                    'prenom' => $joueur->getFirstname(),
+                ];
+            }, array: $joueurs)
+        ]);
+    }
+
+    #[Route('/api/joueur/{id}', name: 'joueurById', methods: ['GET'])]
+    public function getById(Joueur $joueur): JsonResponse
+    {
+        return $this->json([
+            'id' => $joueur->getId(),
+            'nom' => $joueur->getName(),
+            'nbdefaite' => $joueur->getFirstname(),
+        ]);
     }
 }

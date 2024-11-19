@@ -12,20 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class EquipeController extends AbstractController
 {
-
-    #[Route('', methods: ['GET'])]
-    public function index(EquipeRepository $teamRepository): JsonResponse
-    {
-        $teams = $teamRepository->findAllWithPlayersAndScores();
-        return $this->json($teams, 200, [], ['groups' => 'team:read']);
-    }
-
-    #[Route('/{id}', methods: ['GET'])]
-    public function getById(Equipe $team): JsonResponse
-    {
-        return $this->json($team, 200, [], ['groups' => 'team:read']);
-    }
-
     #[Route('/api/equipes', methods: ['POST'])]
     public function addEquipe(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -64,5 +50,35 @@ class EquipeController extends AbstractController
         } catch (\Exception $e) {
             return $this->json(['message' => 'Erreur lors de la suppression de l\'équipe'], 500);
         }
+    }
+
+    #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
+    public function index(EquipeRepository $equipeRepository): JsonResponse
+    {
+        $equipes = $equipeRepository->findAll();
+
+        return $this->json([
+            'equipes' => array_map(callback: function($equipe): array {
+                return [
+                    'id' => $equipe->getId(),
+                    'nom' => $equipe->getNom(),
+                    'nbdefaite' => $equipe->getNbdefaite(),
+                    'nbvictoire' => $equipe->getNbvictoire(),
+                    'nbmatch' => $equipe->getNbmatch(),
+                ];
+            }, array: $equipes)
+        ]);
+    }
+
+    #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
+    public function getById(Equipe $equipe): JsonResponse
+    {
+        return $this->json([
+            'id' => $equipe->getId(),
+            'nom' => $equipe->getNom(),
+            'nbdefaite' => $equipe->getNbdefaite(),
+            'nbvictoire' => $equipe->getNbvictoire(),
+            'nbmatch' => $equipe->getNbmatch(),
+        ]);
     }
 }
