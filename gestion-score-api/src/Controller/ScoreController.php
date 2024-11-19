@@ -46,15 +46,15 @@ class ScoreController extends AbstractController
     public function deleteEquipe(Score $score, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$score) {
-            return $this->json(['message' => 'Joueur non trouvé'], 404);
+            return $this->json(['message' => 'match non trouvé'], 404);
         }
 
         try {
             $entityManager->remove(object: $score);
             $entityManager->flush();
-            return $this->json(['message' => 'Joueur supprimé avec succès'], 200);
+            return $this->json(['message' => 'match supprimé avec succès'], 200);
         } catch (\Exception $e) {
-            return $this->json(['message' => 'Erreur lors de la suppression du joueur'], 500);
+            return $this->json(['message' => 'Erreur lors de la suppression du match'], 500);
         }
     }
 
