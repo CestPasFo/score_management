@@ -48,15 +48,28 @@ class ScoreController extends AbstractController
     // }
 
     #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
-    public function getById(Score $score): JsonResponse
+    public function getById(Score $score, SerializerInterface $serializer): JsonResponse
     {
-        return $this->json([
-            'id' => $score->getId(),
-            'Equipe A' => $score->getEquipeA(),
-            'score' => $score->getScore(),
-            'Equipe B' => $score->getEquipeB(),
+        $jsonContent = $serializer->serialize($score, 'json', [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS                     => ['score:read','equipe:read','joueur:read'],
         ]);
-    } 
+
+        return new JsonResponse($jsonContent, 200, [], true);
+    }
+
+    // #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
+    // public function getById(Score $score): JsonResponse
+    // {
+    //     return $this->json([
+    //         'id' => $score->getId(),
+    //         'Equipe A' => $score->getEquipeA(),
+    //         'score' => $score->getScore(),
+    //         'Equipe B' => $score->getEquipeB(),
+    //     ]);
+    // } 
     
     #[Route('/api/scores/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Score $score, EntityManagerInterface $entityManager): JsonResponse

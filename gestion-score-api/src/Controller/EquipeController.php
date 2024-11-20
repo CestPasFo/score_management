@@ -83,22 +83,34 @@ class EquipeController extends AbstractController
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                 return $object->getId();
             },
-            AbstractNormalizer::IGNORED_ATTRIBUTES => ['__initializer__', '__cloner__', '__isInitialized__'],
         ]);
 
         return new JsonResponse($jsonContent, 200, [], true);
     }
 
+    // #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
+    // public function getById(Equipe $equipe): JsonResponse
+    // {
+    //     return $this->json([
+    //         'id' => $equipe->getId(),
+    //         'nom' => $equipe->getNom(),
+    //         'joueurs' => $equipe->getJoueurs(),
+    //         'nbdefaite' => $equipe->getNbdefaite(),
+    //         'nbvictoire' => $equipe->getNbvictoire(),
+    //         'nbmatch' => $equipe->getNbmatch(),
+    //     ]);
+    // }
+
     #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
-    public function getById(Equipe $equipe): JsonResponse
+    public function getById(Equipe $equipe, SerializerInterface $serializer): JsonResponse
     {
-        return $this->json([
-            'id' => $equipe->getId(),
-            'nom' => $equipe->getNom(),
-            'joueurs' => $equipe->getJoueurs(),
-            'nbdefaite' => $equipe->getNbdefaite(),
-            'nbvictoire' => $equipe->getNbvictoire(),
-            'nbmatch' => $equipe->getNbmatch(),
+        $jsonContent = $serializer->serialize($equipe, 'json', [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS                     => ['equipe:read','joueur:read'],
         ]);
+
+        return new JsonResponse($jsonContent, 200, [], true);
     }
 }
