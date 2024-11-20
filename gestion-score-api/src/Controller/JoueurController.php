@@ -12,6 +12,7 @@ use App\Repository\JoueurRepository;
 
 class JoueurController extends AbstractController
 {
+    //Méthode permettant l'ajout d'un joueur dans la BDD
     #[Route('/api/joueurs', methods: ['POST'])]
     public function addJoueur(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -32,16 +33,15 @@ class JoueurController extends AbstractController
 
     }
 
+    //Méthode permettant de supprimer un joueur de la BDD
     #[Route('/api/joueurs/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Joueur $joueur, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Vérifier si l'équipe existe
         if (!$joueur) {
             return $this->json(['message' => 'Joueur non trouvé'], 404);
         }
 
         try {
-            // Supprimer l'équipe
             $entityManager->remove(object: $joueur);
             $entityManager->flush();
 
@@ -51,6 +51,7 @@ class JoueurController extends AbstractController
         }
     }
 
+    //Méthode permettant de lister les joueurs
     #[Route('/api/joueurs', name: 'joueur_index', methods: ['GET'])]
     public function index(JoueurRepository $joueurRepository): JsonResponse
     {
@@ -67,6 +68,7 @@ class JoueurController extends AbstractController
         ]);
     }
 
+    //Méthode permettant de lister les joueurs selon leurs ID
     #[Route('/api/joueurs/{id}', name: 'joueurById', methods: ['GET'])]
     public function getById(Joueur $joueur): JsonResponse
     {

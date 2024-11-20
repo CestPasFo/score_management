@@ -14,6 +14,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class EquipeController extends AbstractController
 {
+    //Méthode permettant d'ajouter une équipe dans la BDD
     #[Route('/api/equipes', methods: ['POST'])]
     public function addEquipe(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -35,16 +36,15 @@ class EquipeController extends AbstractController
 
     }
 
+    //Méthode permettant de supprimer une équipe dans la BDD
     #[Route('/api/equipes/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Equipe $equipe, EntityManagerInterface $entityManager): JsonResponse
     {
-        // Vérifier si l'équipe existe
         if (!$equipe) {
             return $this->json(['message' => 'Équipe non trouvée'], 404);
         }
 
         try {
-            // Supprimer l'équipe
             $entityManager->remove(object: $equipe);
             $entityManager->flush();
 
@@ -73,6 +73,7 @@ class EquipeController extends AbstractController
     //     ]);
     // }
 
+    //Méthode permettant de lister les équipes présentes en BDD
     #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
     public function index(EquipeRepository $equipeRepository, SerializerInterface $serializer): JsonResponse
     {
@@ -101,6 +102,7 @@ class EquipeController extends AbstractController
     //     ]);
     // }
 
+    //Méthode permettant de récuperer les informations d'une équipe selon son ID
     #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
     public function getById(Equipe $equipe, SerializerInterface $serializer): JsonResponse
     {

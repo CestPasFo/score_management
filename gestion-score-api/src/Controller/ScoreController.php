@@ -15,6 +15,7 @@ use App\Repository\EquipeRepository;
 
 class ScoreController extends AbstractController
 {
+    //Méthode permettant le listing des matchs présents dans la BDD
     #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
     public function index(ScoreRepository $scoreRepository, SerializerInterface $serializer): JsonResponse
     {
@@ -47,6 +48,7 @@ class ScoreController extends AbstractController
     //     ]);
     // }
 
+    //Méthode permettant le listing des matchs présents dans la BDD en fonction d'un ID    
     #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
     public function getById(Score $score, SerializerInterface $serializer): JsonResponse
     {
@@ -71,6 +73,7 @@ class ScoreController extends AbstractController
     //     ]);
     // } 
     
+    //Méthode permettant la suppression d'un match présents dans la BDD
     #[Route('/api/scores/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Score $score, EntityManagerInterface $entityManager): JsonResponse
     {
@@ -87,6 +90,7 @@ class ScoreController extends AbstractController
         }
     }
 
+    //Méthode permettant l'ajout d'un match dans la BDD
     #[Route('/api/scores', name: 'score_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, EquipeRepository $equipeRepository): JsonResponse
     {
@@ -98,18 +102,13 @@ class ScoreController extends AbstractController
         if (!$equipeA || !$equipeB) {
             return $this->json(['error' => 'Une ou les deux équipes n\'existent pas'], 404);
         }
-
-        // Créer un nouveau score
+        
         $score = new Score();
         $score->setEquipeA(equipeA: $equipeA);
         $score->setEquipeB(equipeB: $equipeB);
         $score->setScore(score: $data['score']);
-
-        // Persister le score
         $entityManager->persist(object: $score);
         $entityManager->flush();
-
-        // Retourner la réponse
         return $this->json([
             'message' => 'Match créé avec succès',
             'id' => $score->getId(),
