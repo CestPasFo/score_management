@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: EquipeRepository::class)]
 class Equipe
@@ -12,16 +15,14 @@ class Equipe
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["equipe:read"])]
     private ?int $id = null;
 
     #[ORM\Column(length: 30)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 30)]
+    #[Groups(["equipe:read"])]
     private ?string $nom = null;
-
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Joueur $joueurs = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $nbdefaite = null;
@@ -30,7 +31,22 @@ class Equipe
     private ?int $nbvictoire = null;
 
     #[ORM\Column]
+    #[Groups(["equipe:read"])]
     private ?int $nbmatch = null;
+
+    #[ORM\OneToMany(targetEntity: Joueur::class, mappedBy: 'equipe')]
+    #[Groups(["equipe:read"])]
+    private Collection $joueurs;
+
+    public function __construct()
+    {
+        $this->joueurs = new ArrayCollection();
+    }
+
+    public function getJoueurs(): Collection
+    {
+        return $this->joueurs;
+    }
 
     public function getId(): ?int
     {
@@ -45,18 +61,6 @@ class Equipe
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
-        return $this;
-    }
-
-    public function getJoueurs(): ?Joueur
-    {
-        return $this->joueurs;
-    }
-
-    public function setJoueurs(?Joueur $joueurs): static
-    {
-        $this->joueurs = $joueurs;
 
         return $this;
     }
