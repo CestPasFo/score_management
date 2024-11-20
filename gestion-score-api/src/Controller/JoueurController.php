@@ -12,7 +12,7 @@ use App\Repository\JoueurRepository;
 
 class JoueurController extends AbstractController
 {
-    #[Route('/api/addjoueurs', methods: ['POST'])]
+    #[Route('/api/joueurs', methods: ['POST'])]
     public function addJoueur(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode(json: $request->getContent(), associative: true);
@@ -32,7 +32,7 @@ class JoueurController extends AbstractController
 
     }
 
-    #[Route('/api/removejoueurs/{id}', methods: ['DELETE'])]
+    #[Route('/api/joueurs/{id}', methods: ['DELETE'])]
     public function deleteEquipe(Joueur $joueur, EntityManagerInterface $entityManager): JsonResponse
     {
         // Vérifier si l'équipe existe
