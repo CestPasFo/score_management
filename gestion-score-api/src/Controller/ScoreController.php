@@ -15,36 +15,37 @@ use App\Repository\EquipeRepository;
 
 class ScoreController extends AbstractController
 {
-    // #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
-    // public function index(EntityManagerInterface $entityManager,  SerializerInterface $serializer): JsonResponse
-    // {
-    //     $scores = $entityManager->getRepository(Score::class)->findAll();
-    //     $normalizedTeams = $serializer->normalize($scores, null, [
-    //         AbstractNormalizer::GROUPS                     => ['score:read'],
-    //         AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
-    //             return $object->getId();
-    //         },
-    //     ]);
-
-    //     return $this->json($normalizedTeams);
-    // }
-
     #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
-    public function index(ScoreRepository $scoreRepository): JsonResponse
+    public function index(ScoreRepository $scoreRepository, SerializerInterface $serializer): JsonResponse
     {
         $scores = $scoreRepository->findAll();
 
-        return $this->json([
-            'match' => array_map(callback: function($scores): array {
-                return [
-                    'id' => $scores->getId(),
-                    'Equipe A' => $scores->getEquipeA(),
-                    'score' => $scores->getScore(),
-                    'Equipe B' => $scores->getEquipeB(),
-                ];
-            }, array: $scores)
+        $jsonContent = $serializer->serialize($scores, 'json', [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS                     => ['score:read','equipe:read','joueur:read'],
         ]);
+
+        return new JsonResponse($jsonContent, 200, [], true);
     }
+
+    // #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
+    // public function index(ScoreRepository $scoreRepository): JsonResponse
+    // {
+    //     $scores = $scoreRepository->findAll();
+
+    //     return $this->json([
+    //         'match' => array_map(callback: function($scores): array {
+    //             return [
+    //                 'id' => $scores->getId(),
+    //                 'Equipe A' => $scores->getEquipeA(),
+    //                 'score' => $scores->getScore(),
+    //                 'Equipe B' => $scores->getEquipeB(),
+    //             ];
+    //         }, array: $scores)
+    //     ]);
+    // }
 
     #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
     public function getById(Score $score): JsonResponse

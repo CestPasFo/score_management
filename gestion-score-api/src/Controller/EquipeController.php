@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class EquipeController extends AbstractController
 {
@@ -52,22 +54,39 @@ class EquipeController extends AbstractController
         }
     }
 
+    // #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
+    // public function index(EquipeRepository $equipeRepository): JsonResponse
+    // {
+    //     $equipes = $equipeRepository->findAll();
+
+    //     return $this->json([
+    //         'equipes' => array_map(callback: function($equipe): array {
+    //             return [
+    //                 'id' => $equipe->getId(),
+    //                 'nom' => $equipe->getNom(),
+    //                 'joueurs' => $equipe->getJoueurs(),
+    //                 'nbdefaite' => $equipe->getNbdefaite(),
+    //                 'nbvictoire' => $equipe->getNbvictoire(),
+    //                 'nbmatch' => $equipe->getNbmatch(),
+    //             ];
+    //         }, array: $equipes)
+    //     ]);
+    // }
+
     #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
-    public function index(EquipeRepository $equipeRepository): JsonResponse
+    public function index(EquipeRepository $equipeRepository, SerializerInterface $serializer): JsonResponse
     {
         $equipes = $equipeRepository->findAll();
 
-        return $this->json([
-            'equipes' => array_map(callback: function($equipe): array {
-                return [
-                    'id' => $equipe->getId(),
-                    'nom' => $equipe->getNom(),
-                    'nbdefaite' => $equipe->getNbdefaite(),
-                    'nbvictoire' => $equipe->getNbvictoire(),
-                    'nbmatch' => $equipe->getNbmatch(),
-                ];
-            }, array: $equipes)
+        $jsonContent = $serializer->serialize($equipes, 'json', [
+            AbstractNormalizer::GROUPS                     => ['equipe:read','joueur:read'],
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::IGNORED_ATTRIBUTES => ['__initializer__', '__cloner__', '__isInitialized__'],
         ]);
+
+        return new JsonResponse($jsonContent, 200, [], true);
     }
 
     #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
@@ -76,6 +95,7 @@ class EquipeController extends AbstractController
         return $this->json([
             'id' => $equipe->getId(),
             'nom' => $equipe->getNom(),
+            'joueurs' => $equipe->getJoueurs(),
             'nbdefaite' => $equipe->getNbdefaite(),
             'nbvictoire' => $equipe->getNbvictoire(),
             'nbmatch' => $equipe->getNbmatch(),
