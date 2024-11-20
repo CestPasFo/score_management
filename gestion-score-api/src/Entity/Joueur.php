@@ -20,6 +20,12 @@ class Joueur
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 20)]
     #[Groups(["joueur:read"])]
+    private int $equipeId = null;
+
+    #[ORM\Column(length: 20)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 20)]
+    #[Groups(["joueur:read"])]
     private ?string $firstname = null;
 
     #[ORM\Column(length: 20)]
@@ -33,6 +39,17 @@ class Joueur
         return $this->id;
     }
 
+    public function getEquipeID(): ?int
+    {
+        return $this->equipeId;
+    }
+
+    public function setEquipeID(int $equipeId)
+    {
+        $this->equipeId = $equipeId;
+        return $this;
+    }
+
     public function getName(): ?string
     {
         return $this->name;
@@ -41,9 +58,10 @@ class Joueur
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
+
+
 
     public function getFirstname(): ?string
     {
