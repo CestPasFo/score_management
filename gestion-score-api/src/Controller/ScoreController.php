@@ -7,25 +7,40 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use App\Entity\Score;
 use App\Repository\ScoreRepository;
 use App\Repository\EquipeRepository;
 
 class ScoreController extends AbstractController
 {
+    // #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
+    // public function index(EntityManagerInterface $entityManager,  SerializerInterface $serializer): JsonResponse
+    // {
+    //     $scores = $entityManager->getRepository(Score::class)->findAll();
+    //     $normalizedTeams = $serializer->normalize($scores, null, [
+    //         AbstractNormalizer::GROUPS                     => ['score:read'],
+    //         AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+    //             return $object->getId();
+    //         },
+    //     ]);
+
+    //     return $this->json($normalizedTeams);
+    // }
+
     #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
     public function index(ScoreRepository $scoreRepository): JsonResponse
     {
         $scores = $scoreRepository->findAll();
 
         return $this->json([
-            'equipes' => array_map(callback: function($equipeA,$equipeB, $score): array {
+            'match' => array_map(callback: function($scores): array {
                 return [
-                    'id de l\'equipe A' => $equipeA->getId(),
-                    'nom de l\'equipe A' => $equipeA->getNom(),
-                    'score du match' => $score->getScore(),
-                    'id de l\'equipe B'=> $equipeB->getId(),
-                    'nom de l\'equipe B' => $equipeB->getNom(),
+                    'id' => $scores->getId(),
+                    'Equipe A' => $scores->getEquipeA(),
+                    'score' => $scores->getScore(),
+                    'Equipe B' => $scores->getEquipeB(),
                 ];
             }, array: $scores)
         ]);
