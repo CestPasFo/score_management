@@ -29,6 +29,7 @@ class JoueurController extends AbstractController
         return $this->json([
              'message' => 'Le joueur a été créé avec succès',
              'id' => $joueur->getId(),
+             'joueurID'=> $joueur->getEquipeID(),
              'nom' => $joueur->getName(),
              'prenom' => $joueur->getFirstname()
          ], 201);
