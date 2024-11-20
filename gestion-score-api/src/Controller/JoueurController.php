@@ -73,7 +73,7 @@ class JoueurController extends AbstractController
         return $this->json([
             'id' => $joueur->getId(),
             'nom' => $joueur->getName(),
-            'nbdefaite' => $joueur->getFirstname(),
+            'prenom' => $joueur->getFirstname(),
         ]);
     }
 }
