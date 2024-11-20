@@ -25,7 +25,7 @@ class ScoreController extends AbstractController
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                 return $object->getId();
             },
-            AbstractNormalizer::GROUPS                     => ['score:read','equipe:read','joueur:read'],
+            AbstractNormalizer::GROUPS => ['score:read','equipe:read','joueur:read'],
         ]);
 
         return new JsonResponse($jsonContent, 200, [], true);
