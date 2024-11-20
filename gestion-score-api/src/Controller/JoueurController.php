@@ -21,6 +21,7 @@ class JoueurController extends AbstractController
         $data = json_decode(json: $request->getContent(), associative: true);
 
         $joueur = new Joueur();
+        $joueur->setEquipeID($data[''] ??'');
         $joueur->setName(name: $data['nom'] ?? '');
         $joueur->setFirstname(firstname: $data[''] ??'');
  

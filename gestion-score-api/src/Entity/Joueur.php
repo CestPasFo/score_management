@@ -15,10 +15,9 @@ class Joueur
     #[ORM\Column]
     #[Groups(["joueur:read"])]
     private ?int $id = null;
-
-    #[ORM\Column(length: 20)]
+    
+    #[ORM\Column]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 20)]
     #[Groups(["joueur:read"])]
     private int $equipeId;
 
