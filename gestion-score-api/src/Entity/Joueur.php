@@ -20,7 +20,7 @@ class Joueur
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 20)]
     #[Groups(["joueur:read"])]
-    private int $equipeId = null;
+    private int $equipeId;
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank]
