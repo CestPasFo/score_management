@@ -60,8 +60,8 @@ class JoueurController extends AbstractController
             'joueurs' => array_map(callback: function($joueur): array {
                 return [
                     'id' => $joueur->getId(),
-                    'nom' => $joueur->getName(),
                     'prenom' => $joueur->getFirstname(),
+                    'nom' => $joueur->getName(),
                 ];
             }, array: $joueurs)
         ]);
@@ -72,8 +72,8 @@ class JoueurController extends AbstractController
     {
         return $this->json([
             'id' => $joueur->getId(),
-            'nom' => $joueur->getName(),
             'prenom' => $joueur->getFirstname(),
+            'nom' => $joueur->getName(),
         ]);
     }
 }
