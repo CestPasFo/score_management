@@ -4,11 +4,9 @@ namespace App\Entity;
 
 use App\Repository\EquipeRepository;
 use Doctrine\ORM\Mapping as ORM;
-use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: EquipeRepository::class)]
-#[ApiResource]
 class Equipe
 {
     #[ORM\Id]

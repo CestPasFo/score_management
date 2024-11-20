@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\ApiResource;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: JoueurRepository::class)]
-#[ApiResource]
 class Joueur
 {
     #[ORM\Id]

@@ -5,25 +5,29 @@ namespace App\Entity;
 use App\Repository\ScoreRepository;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\ApiResource;
+use Symfony\Component\Serializer\Attribute\Groups;
 
 #[ORM\Entity(repositoryClass: ScoreRepository::class)]
-#[ApiResource]
 class Score
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(["score:read"])]
     private ?int $id = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["score:read"])]
     private ?Equipe $equipeA = null;
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["score:read"])]
     private ?Equipe $equipeB = null;
 
     #[ORM\Column(length: 70)]
+    #[Groups(["score:read"])]
     private ?string $score = null;
 
     public function getId(): ?int
