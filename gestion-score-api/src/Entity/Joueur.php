@@ -20,13 +20,13 @@ class Joueur
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 20)]
     #[Groups(["joueur:read"])]
-    private ?string $name = null;
+    private ?string $firstname = null;
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 20)]
     #[Groups(["joueur:read"])]
-    private ?string $firstname = null;
+    private ?string $name = null;
 
     public function getId(): ?int
     {

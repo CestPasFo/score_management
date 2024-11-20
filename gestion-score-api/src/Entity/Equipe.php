@@ -30,10 +30,6 @@ class Equipe
     #[ORM\Column(nullable: true)]
     private ?int $nbvictoire = null;
 
-    #[ORM\Column]
-    #[Groups(["equipe:read"])]
-    private ?int $nbmatch = null;
-
     #[ORM\OneToMany(targetEntity: Joueur::class, mappedBy: 'equipe')]
     #[Groups(["equipe:read"])]
     private Collection $joueurs;
@@ -42,6 +38,10 @@ class Equipe
     {
         $this->joueurs = new ArrayCollection();
     }
+
+    #[ORM\Column]
+    #[Groups(["equipe:read"])]
+    private ?int $nbmatch = null;
 
     public function getJoueurs(): Collection
     {

@@ -21,14 +21,14 @@ class Score
     #[Groups(["score:read"])]
     private ?Equipe $equipeA = null;
 
+    #[ORM\Column(length: 70)]
+    #[Groups(["score:read"])]
+    private ?string $score = null;
+
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["score:read"])]
     private ?Equipe $equipeB = null;
-
-    #[ORM\Column(length: 70)]
-    #[Groups(["score:read"])]
-    private ?string $score = null;
 
     public function getId(): ?int
     {
