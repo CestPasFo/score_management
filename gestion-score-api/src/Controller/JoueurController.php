@@ -27,7 +27,7 @@ class JoueurController extends AbstractController
         $entityManager->persist(object: $joueur);
         $entityManager->flush();
         return $this->json([
-             'message' => 'Joueur créé avec succès',
+             'message' => 'Le joueur a été créé avec succès',
              'id' => $joueur->getId(),
              'nom' => $joueur->getName(),
              'prenom' => $joueur->getFirstname()
