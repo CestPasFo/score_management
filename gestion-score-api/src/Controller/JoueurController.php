@@ -9,6 +9,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Joueur;
 use App\Repository\JoueurRepository;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
 class JoueurController extends AbstractController
 {
@@ -78,4 +80,28 @@ class JoueurController extends AbstractController
             'nom' => $joueur->getName(),
         ]);
     }
+
+    //Méthode permettant de mettre à jour les informations relatifs à un joueur en BDD
+    #[Route('/api/joueurs/{id}', name: 'joueur_update', methods: ['PUT'])]
+    public function update(Request $request, Joueur $joueur, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $updatedJoueur = $serializer->deserialize(
+            $request->getContent(),
+            Joueur::class,
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $joueur]
+        );
+
+        $entityManager->flush();
+
+        $jsonContent = $serializer->serialize($updatedJoueur, 'json', [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS => ['joueur:read'],
+        ]);
+
+        return new JsonResponse($jsonContent, JsonResponse::HTTP_OK, [], true);
+    }
+
 }

@@ -102,7 +102,7 @@ class ScoreController extends AbstractController
         if (!$equipeA || !$equipeB) {
             return $this->json(['error' => 'Une ou les deux équipes n\'existent pas'], 404);
         }
-        
+
         $score = new Score();
         $score->setEquipeA(equipeA: $equipeA);
         $score->setEquipeB(equipeB: $equipeB);
@@ -116,5 +116,28 @@ class ScoreController extends AbstractController
             'equipeB' => $score->getEquipeB()->getNom(),  
             'score' => $score->getScore()
         ], 201);
+    }
+
+    //Méthode permettant de mettre à jour les informations relatifs à un match présentes en BDD
+    #[Route('/api/scores/{id}', name: 'score_update', methods: ['PUT'])]
+    public function update(Request $request, Score $score, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $updatedScore = $serializer->deserialize(
+            $request->getContent(),
+            Score::class,
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $score]
+        );
+
+        $entityManager->flush();
+
+        $jsonContent = $serializer->serialize($updatedScore, 'json', [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS => ['score:read','equipe:read'],
+        ]);
+
+        return new JsonResponse($jsonContent, JsonResponse::HTTP_OK, [], true);
     }
 }

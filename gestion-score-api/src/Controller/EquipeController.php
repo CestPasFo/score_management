@@ -110,9 +110,32 @@ class EquipeController extends AbstractController
             AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
                 return $object->getId();
             },
-            AbstractNormalizer::GROUPS                     => ['equipe:read','joueur:read'],
+            AbstractNormalizer::GROUPS => ['equipe:read','joueur:read'],
         ]);
 
         return new JsonResponse($jsonContent, 200, [], true);
+    }
+
+    //Méthode permettant la mise à jour d'éléments relatifs à une équipe présente en BDD
+    #[Route('/api/equipes/{id}', name: 'equipe_update', methods: ['PUT'])]
+    public function update(Request $request, Equipe $equipe, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $updatedEquipe = $serializer->deserialize(
+            $request->getContent(),
+            Equipe::class,
+            'json',
+            [AbstractNormalizer::OBJECT_TO_POPULATE => $equipe]
+        );
+
+        $entityManager->flush();
+
+        $jsonContent = $serializer->serialize($updatedEquipe, 'json', [
+            AbstractNormalizer::CIRCULAR_REFERENCE_HANDLER => function ($object) {
+                return $object->getId();
+            },
+            AbstractNormalizer::GROUPS => ['equipe:read'],
+        ]);
+
+        return new JsonResponse($jsonContent, JsonResponse::HTTP_OK, [], true);
     }
 }
