@@ -21,9 +21,9 @@ class JoueurController extends AbstractController
         $data = json_decode(json: $request->getContent(), associative: true);
 
         $joueur = new Joueur();
-        $joueur->setEquipeID($data[''] ??'');
+        $joueur->setEquipeID(equipeId: (int)($data['equipeId'] ?? 0));
         $joueur->setName(name: $data['nom'] ?? '');
-        $joueur->setFirstname(firstname: $data[''] ??'');
+        $joueur->setFirstname(firstname: $data['firstname'] ?? '');
  
         $entityManager->persist(object: $joueur);
         $entityManager->flush();
