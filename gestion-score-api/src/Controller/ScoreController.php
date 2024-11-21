@@ -82,7 +82,7 @@ class ScoreController extends AbstractController
             $entityManager->flush();
             return $this->json(['message' => 'Match supprimé avec succès'], JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
-            return $this->json(['message' => 'Erreur lors de la suppression du match'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+            return $this->json(['message' => $e.'Erreur lors de la suppression du match'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

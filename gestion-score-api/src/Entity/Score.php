@@ -16,8 +16,8 @@ class Score
     #[Groups(["score:read"])]
     private ?int $id = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne()]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups(["score:read"])]
     private ?Equipe $equipeA = null;
 
@@ -25,8 +25,8 @@ class Score
     #[Groups(["score:read"])]
     private ?string $score = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\OneToOne()]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups(["score:read"])]
     private ?Equipe $equipeB = null;
 
