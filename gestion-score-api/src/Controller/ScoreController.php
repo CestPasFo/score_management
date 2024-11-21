@@ -75,18 +75,14 @@ class ScoreController extends AbstractController
     
     //Méthode permettant la suppression d'un match présents dans la BDD
     #[Route('/api/scores/{id}', methods: ['DELETE'])]
-    public function deleteEquipe(Score $score, EntityManagerInterface $entityManager): JsonResponse
+    public function deleteScore(Score $score, EntityManagerInterface $entityManager): JsonResponse
     {
-        if (!$score) {
-            return $this->json(['message' => 'match non trouvé'], 404);
-        }
-
         try {
-            $entityManager->remove(object: $score);
+            $entityManager->remove($score);
             $entityManager->flush();
-            return $this->json(['message' => 'match supprimé avec succès'], 200);
+            return $this->json(['message' => 'Match supprimé avec succès'], JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
-            return $this->json(['message' => 'Erreur lors de la suppression du match'], 500);
+            return $this->json(['message' => 'Erreur lors de la suppression du match'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -94,28 +90,34 @@ class ScoreController extends AbstractController
     #[Route('/api/scores', name: 'score_create', methods: ['POST'])]
     public function create(Request $request, EntityManagerInterface $entityManager, EquipeRepository $equipeRepository): JsonResponse
     {
-        $data = json_decode(json: $request->getContent(), associative: true);
+        $data = json_decode($request->getContent(), true);
+
+        if (!isset($data['equipeA_id'], $data['equipeB_id'], $data['score'])) {
+            return $this->json(['error' => 'Données incomplètes'], JsonResponse::HTTP_BAD_REQUEST);
+        }
 
         $equipeA = $equipeRepository->find($data['equipeA_id']);
         $equipeB = $equipeRepository->find($data['equipeB_id']);
 
         if (!$equipeA || !$equipeB) {
-            return $this->json(['error' => 'Une ou les deux équipes n\'existent pas'], 404);
+            return $this->json(['error' => 'Une ou les deux équipes n\'existent pas'], JsonResponse::HTTP_NOT_FOUND);
         }
 
         $score = new Score();
-        $score->setEquipeA(equipeA: $equipeA);
-        $score->setEquipeB(equipeB: $equipeB);
-        $score->setScore(score: $data['score']);
-        $entityManager->persist(object: $score);
+        $score->setEquipeA($equipeA);
+        $score->setEquipeB($equipeB);
+        $score->setScore($data['score']);
+
+        $entityManager->persist($score);
         $entityManager->flush();
+
         return $this->json([
             'message' => 'Match créé avec succès',
             'id' => $score->getId(),
-            'equipeA' => $score->getEquipeA()->getNom(),
-            'equipeB' => $score->getEquipeB()->getNom(),  
+            'equipeA' => $score->getEquipeA()->getId(),
+            'equipeB' => $score->getEquipeB()->getId(),  
             'score' => $score->getScore()
-        ], 201);
+        ], JsonResponse::HTTP_CREATED);
     }
 
     //Méthode permettant de mettre à jour les informations relatifs à un match présentes en BDD
