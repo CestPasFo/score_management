@@ -127,7 +127,7 @@ php bin/phpunit
 
 ### Déploiement
 #### Technologies Utilisées
-Symfony 6.x
+Symfony 7.x
 Doctrine ORM
 PHP 8.1+
 MySQL/PostgreSQL
