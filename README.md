@@ -11,6 +11,8 @@ Cette application permet de gérer des équipes, des joueurs et des scores de ma
 - Symfony CLI
 - MySQL ou PostgreSQL
 
+---
+
 ## Installation
 
 ### Clonage du Projet
@@ -52,6 +54,8 @@ php bin/console doctrine:migrations:migrate
 symfony server:start
 ```
 
+---
+
 ### Structure des Endpoints API
 #### Équipes
 ```
@@ -79,6 +83,8 @@ POST /api/scores : Créer un score
 PUT /api/scores/{id} : Mettre à jour un score
 DELETE /api/scores/{id} : Supprimer un score
 ```
+
+---
 
 ### Exemples de Requêtes
 #### Création d'une Équipe
@@ -109,11 +115,15 @@ DELETE /api/scores/{id} : Supprimer un score
 }
 ```
 
+---
+
 ### Tests
 #### Lancer les tests :
 ```bash
 php bin/phpunit
 ```
+
+---
 
 ### Déploiement
 #### Technologies Utilisées
@@ -121,6 +131,8 @@ Symfony 6.x
 Doctrine ORM
 PHP 8.1+
 MySQL/PostgreSQL
+
+---
 
 ### Auteur
 Cédric J
