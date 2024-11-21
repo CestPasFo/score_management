@@ -54,25 +54,6 @@ class EquipeController extends AbstractController
         }
     }
 
-    // #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
-    // public function index(EquipeRepository $equipeRepository): JsonResponse
-    // {
-    //     $equipes = $equipeRepository->findAll();
-
-    //     return $this->json([
-    //         'equipes' => array_map(callback: function($equipe): array {
-    //             return [
-    //                 'id' => $equipe->getId(),
-    //                 'nom' => $equipe->getNom(),
-    //                 'joueurs' => $equipe->getJoueurs(),
-    //                 'nbdefaite' => $equipe->getNbdefaite(),
-    //                 'nbvictoire' => $equipe->getNbvictoire(),
-    //                 'nbmatch' => $equipe->getNbmatch(),
-    //             ];
-    //         }, array: $equipes)
-    //     ]);
-    // }
-
     //Méthode permettant de lister les équipes présentes en BDD
     #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
     public function index(EquipeRepository $equipeRepository, SerializerInterface $serializer): JsonResponse
@@ -88,19 +69,6 @@ class EquipeController extends AbstractController
 
         return new JsonResponse($jsonContent, 200, [], true);
     }
-
-    // #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
-    // public function getById(Equipe $equipe): JsonResponse
-    // {
-    //     return $this->json([
-    //         'id' => $equipe->getId(),
-    //         'nom' => $equipe->getNom(),
-    //         'joueurs' => $equipe->getJoueurs(),
-    //         'nbdefaite' => $equipe->getNbdefaite(),
-    //         'nbvictoire' => $equipe->getNbvictoire(),
-    //         'nbmatch' => $equipe->getNbmatch(),
-    //     ]);
-    // }
 
     //Méthode permettant de récuperer les informations d'une équipe selon son ID
     #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
