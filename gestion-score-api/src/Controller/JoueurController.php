@@ -11,47 +11,51 @@ use App\Entity\Joueur;
 use App\Repository\JoueurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use App\Repository\EquipeRepository;
 
 class JoueurController extends AbstractController
 {
     //Méthode permettant l'ajout d'un joueur dans la BDD
     #[Route('/api/joueurs', methods: ['POST'])]
-    public function addJoueur(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    public function addJoueur(Request $request, EntityManagerInterface $entityManager, EquipeRepository $equipeRepository): JsonResponse
     {
-        $data = json_decode(json: $request->getContent(), associative: true);
+        $data = json_decode($request->getContent(), true);
 
+        // Vérifier si l'équipe existe
+        $equipe = $equipeRepository->find((int)($data['equipeId'] ?? 0));
+        if (!$equipe) {
+            return $this->json([
+                'message' => 'Équipe non trouvée'
+            ], 404);
+        }
         $joueur = new Joueur();
-        $joueur->setEquipeID(equipeId: (int)($data['equipeId'] ?? 0));
-        $joueur->setName(name: $data['nom'] ?? '');
-        $joueur->setFirstname(firstname: $data['firstname'] ?? '');
- 
-        $entityManager->persist(object: $joueur);
-        $entityManager->flush();
-        return $this->json([
-             'message' => 'Le joueur a été créé avec succès',
-             'id' => $joueur->getId(),
-             'joueurID'=> $joueur->getEquipeID(),
-             'nom' => $joueur->getName(),
-             'prenom' => $joueur->getFirstname()
-         ], 201);
+        $joueur->setEquipe($equipe);
+        $joueur->setName($data['nom'] ?? '');
+        $joueur->setFirstname($data['firstname'] ?? '');
 
+        $entityManager->persist($joueur);
+        $entityManager->flush();
+
+        return $this->json([
+            'message' => 'Le joueur a été créé avec succès',
+            'id' => $joueur->getId(),
+            'equipeId' => $joueur->getEquipe()->getId(),
+            'nom' => $joueur->getName(),
+            'prenom' => $joueur->getFirstname()
+        ], 201);
     }
 
     //Méthode permettant de supprimer un joueur de la BDD
     #[Route('/api/joueurs/{id}', methods: ['DELETE'])]
-    public function deleteEquipe(Joueur $joueur, EntityManagerInterface $entityManager): JsonResponse
+    public function deleteJoueur(Joueur $joueur, EntityManagerInterface $entityManager): JsonResponse
     {
-        if (!$joueur) {
-            return $this->json(['message' => 'Joueur non trouvé'], 404);
-        }
-
         try {
-            $entityManager->remove(object: $joueur);
+            $entityManager->remove($joueur);
             $entityManager->flush();
 
-            return $this->json(['message' => 'Joueur supprimé avec succès'], 200);
+            return $this->json(['message' => 'Joueur supprimé avec succès'], JsonResponse::HTTP_OK);
         } catch (\Exception $e) {
-            return $this->json(['message' => 'Erreur lors de la suppression du joueur'], 500);
+            return $this->json(['message' => 'Erreur lors de la suppression du joueur'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

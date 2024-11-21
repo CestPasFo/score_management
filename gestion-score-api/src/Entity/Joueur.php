@@ -15,11 +15,6 @@ class Joueur
     #[ORM\Column]
     #[Groups(["joueur:read"])]
     private ?int $id = null;
-    
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    #[Groups(["joueur:read"])]
-    private int $equipeId;
 
     #[ORM\Column(length: 20)]
     #[Assert\NotBlank]
@@ -33,20 +28,14 @@ class Joueur
     #[Groups(["joueur:read"])]
     private ?string $name = null;
 
+    #[ORM\ManyToOne(targetEntity: Equipe::class, inversedBy: 'joueurs')]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["joueur:read"])]
+    private ?Equipe $equipe = null;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getEquipeID(): ?int
-    {
-        return $this->equipeId;
-    }
-
-    public function setEquipeID(int $equipeId)
-    {
-        $this->equipeId = $equipeId;
-        return $this;
     }
 
     public function getName(): ?string
@@ -60,8 +49,6 @@ class Joueur
         return $this;
     }
 
-
-
     public function getFirstname(): ?string
     {
         return $this->firstname;
@@ -70,13 +57,8 @@ class Joueur
     public function setFirstname(string $firstname): static
     {
         $this->firstname = $firstname;
-
         return $this;
     }
-
-    #[ORM\ManyToOne(targetEntity: Equipe::class, inversedBy: 'joueurs')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Equipe $equipe = null;
 
     public function getEquipe(): ?Equipe
     {
