@@ -12,11 +12,14 @@ use App\Repository\JoueurRepository;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use App\Repository\EquipeRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class JoueurController extends AbstractController
 {
     //Méthode permettant l'ajout d'un joueur dans la BDD
     #[Route('/api/joueurs', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function addJoueur(Request $request, EntityManagerInterface $entityManager, EquipeRepository $equipeRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -47,6 +50,7 @@ class JoueurController extends AbstractController
 
     //Méthode permettant de supprimer un joueur de la BDD
     #[Route('/api/joueurs/{id}', methods: ['DELETE'])]
+    #[IsGranted('ROLE_USER')]
     public function deleteJoueur(Joueur $joueur, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
@@ -61,6 +65,7 @@ class JoueurController extends AbstractController
 
     //Méthode permettant de lister les joueurs
     #[Route('/api/joueurs', name: 'joueur_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(JoueurRepository $joueurRepository): JsonResponse
     {
         $joueurs = $joueurRepository->findAll();
@@ -78,6 +83,7 @@ class JoueurController extends AbstractController
 
     //Méthode permettant de lister les joueurs selon leurs ID
     #[Route('/api/joueurs/{id}', name: 'joueurById', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function getById(Joueur $joueur): JsonResponse
     {
         return $this->json([
@@ -89,6 +95,7 @@ class JoueurController extends AbstractController
 
     //Méthode permettant de mettre à jour les informations relatifs à un joueur en BDD
     #[Route('/api/joueurs/{id}', name: 'joueur_update', methods: ['PUT'])]
+    #[IsGranted('ROLE_USER')]
     public function update(Request $request, Joueur $joueur, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
     {
         $updatedJoueur = $serializer->deserialize(

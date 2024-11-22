@@ -12,11 +12,14 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use App\Entity\Score;
 use App\Repository\ScoreRepository;
 use App\Repository\EquipeRepository;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 
 class ScoreController extends AbstractController
 {
     //Méthode permettant le listing des matchs présents dans la BDD
     #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(ScoreRepository $scoreRepository, SerializerInterface $serializer): JsonResponse
     {
         $scores = $scoreRepository->findAll();
@@ -31,25 +34,9 @@ class ScoreController extends AbstractController
         return new JsonResponse($jsonContent, 200, [], true);
     }
 
-    // #[Route('/api/scores', name: 'score_index', methods: ['GET'])]
-    // public function index(ScoreRepository $scoreRepository): JsonResponse
-    // {
-    //     $scores = $scoreRepository->findAll();
-
-    //     return $this->json([
-    //         'match' => array_map(callback: function($scores): array {
-    //             return [
-    //                 'id' => $scores->getId(),
-    //                 'Equipe A' => $scores->getEquipeA(),
-    //                 'score' => $scores->getScore(),
-    //                 'Equipe B' => $scores->getEquipeB(),
-    //             ];
-    //         }, array: $scores)
-    //     ]);
-    // }
-
     //Méthode permettant le listing des matchs présents dans la BDD en fonction d'un ID    
     #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function getById(Score $score, SerializerInterface $serializer): JsonResponse
     {
         $jsonContent = $serializer->serialize($score, 'json', [
@@ -61,20 +48,10 @@ class ScoreController extends AbstractController
 
         return new JsonResponse($jsonContent, 200, [], true);
     }
-
-    // #[Route('/api/scores/{id}', name: 'score_byId', methods: ['GET'])]
-    // public function getById(Score $score): JsonResponse
-    // {
-    //     return $this->json([
-    //         'id' => $score->getId(),
-    //         'Equipe A' => $score->getEquipeA(),
-    //         'score' => $score->getScore(),
-    //         'Equipe B' => $score->getEquipeB(),
-    //     ]);
-    // } 
     
     //Méthode permettant la suppression d'un match présents dans la BDD
     #[Route('/api/scores/{id}', methods: ['DELETE'])]
+    #[IsGranted('ROLE_USER')]
     public function deleteScore(Score $score, EntityManagerInterface $entityManager): JsonResponse
     {
         try {
@@ -88,6 +65,7 @@ class ScoreController extends AbstractController
 
     //Méthode permettant l'ajout d'un match dans la BDD
     #[Route('/api/scores', name: 'score_create', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function create(Request $request, EntityManagerInterface $entityManager, EquipeRepository $equipeRepository): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
@@ -122,6 +100,7 @@ class ScoreController extends AbstractController
 
     //Méthode permettant de mettre à jour les informations relatifs à un match présentes en BDD
     #[Route('/api/scores/{id}', name: 'score_update', methods: ['PUT'])]
+    #[IsGranted('ROLE_USER')]
     public function update(Request $request, Score $score, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
     {
         $updatedScore = $serializer->deserialize(

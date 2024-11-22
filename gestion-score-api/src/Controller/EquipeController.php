@@ -11,11 +11,13 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class EquipeController extends AbstractController
 {
     //Méthode permettant d'ajouter une équipe dans la BDD
     #[Route('/api/equipes', methods: ['POST'])]
+    #[IsGranted('ROLE_USER')]
     public function addEquipe(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode(json: $request->getContent(), associative: true);
@@ -38,6 +40,7 @@ class EquipeController extends AbstractController
 
     //Méthode permettant de supprimer une équipe dans la BDD
     #[Route('/api/equipes/{id}', methods: ['DELETE'])]
+    #[IsGranted('ROLE_USER')]
     public function deleteEquipe(Equipe $equipe, EntityManagerInterface $entityManager): JsonResponse
     {
         if (!$equipe) {
@@ -56,6 +59,7 @@ class EquipeController extends AbstractController
 
     //Méthode permettant de lister les équipes présentes en BDD
     #[Route('/api/equipes', name: 'equipe_index', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(EquipeRepository $equipeRepository, SerializerInterface $serializer): JsonResponse
     {
         $equipes = $equipeRepository->findAll();
@@ -72,6 +76,7 @@ class EquipeController extends AbstractController
 
     //Méthode permettant de récuperer les informations d'une équipe selon son ID
     #[Route('/api/equipes/{id}', name: 'equipe_byId', methods: ['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function getById(Equipe $equipe, SerializerInterface $serializer): JsonResponse
     {
         $jsonContent = $serializer->serialize($equipe, 'json', [
@@ -86,6 +91,7 @@ class EquipeController extends AbstractController
 
     //Méthode permettant la mise à jour d'éléments relatifs à une équipe présente en BDD
     #[Route('/api/equipes/{id}', name: 'equipe_update', methods: ['PUT'])]
+    #[IsGranted('ROLE_USER')]
     public function update(Request $request, Equipe $equipe, SerializerInterface $serializer, EntityManagerInterface $entityManager): JsonResponse
     {
         $updatedEquipe = $serializer->deserialize(
