@@ -1,14 +1,9 @@
 security:
-    password_hashers:
-        App\Entity\User:
-            algorithm: auto
-
     providers:
         app_user_provider:
             entity:
                 class: App\Entity\User
                 property: email
-
     firewalls:
         main:
             lazy: true
@@ -18,10 +13,14 @@ security:
                 check_path: app_login
             logout:
                 path: app_logout
+    password_hashers:
+        App\Entity\User: 'auto'
 
     access_control:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/login, roles: PUBLIC_ACCESS }
 
 when@test:
     security:
