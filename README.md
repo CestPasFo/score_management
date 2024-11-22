@@ -1,4 +1,4 @@
-# Gestion de Scores Sportifs
+# Création d'une API simple avec Symfony
 
 ## Description du Projet
 
