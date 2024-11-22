@@ -114,6 +114,31 @@ DELETE /api/scores/{id} : Supprimer un score
   "score": "3-2"
 }
 ```
+## Gestion de compte
+
+---
+- **Création de compte** : Les utilisateurs peuvent s'inscrire en fournissant un email et un mot de passe. Les mots de passe sont stockés de manière sécurisée après avoir été hachés.
+- **Connexion** : Les utilisateurs peuvent se connecter à leur compte en utilisant leur email et mot de passe. En cas d'erreur, un message approprié est affiché.
+- **Déconnexion** : Les utilisateurs peuvent se déconnecter, ce qui les redirige vers la page de connexion.
+
+---
+
+### Authentification Utilisateur
+#### Création d'un Compte (Register)
+```json
+{
+  "email": "test@example.com",
+  "plainPassword": "password123"
+}
+```
+
+#### Connexion (Login)
+```json
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+```
 
 ---
 
